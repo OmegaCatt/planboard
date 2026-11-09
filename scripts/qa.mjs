@@ -1,0 +1,37 @@
+import {spawn} from 'node:child_process';import {once} from 'node:events';import {mkdtemp,rm,readFile,mkdir} from 'node:fs/promises';import {tmpdir} from 'node:os';import path from 'node:path';import {fileURLToPath} from 'node:url';import assert from 'node:assert/strict';import {chromium} from 'playwright';
+const root=fileURLToPath(new URL('../',import.meta.url)),temp=await mkdtemp(path.join(tmpdir(),'planboard-qa-'));
+const python=process.env.PLANBOARD_PYTHON||'python';
+const child=spawn(python,['-u','-c',"import sys;from server import create_server;s=create_server(0,sys.argv[1]);print(s.server_address[1],flush=True);s.serve_forever()",path.join(temp,'test.sqlite')],{cwd:root,windowsHide:true,stdio:['ignore','pipe','pipe']});let browser;
+try{
+ const port=await new Promise((resolve,reject)=>{const timeout=setTimeout(()=>reject(Error('QA server did not start')),20000);child.once('error',e=>{clearTimeout(timeout);reject(e)});child.once('exit',code=>{clearTimeout(timeout);reject(Error('QA server exited '+code))});child.stdout.once('data',d=>{clearTimeout(timeout);resolve(String(d).trim())})});assert.match(port,/^\d+$/);
+ browser=await chromium.launch({headless:true,...(process.env.PLAYWRIGHT_EXECUTABLE_PATH?{executablePath:process.env.PLAYWRIGHT_EXECUTABLE_PATH}:{})});const p=await browser.newPage({viewport:{width:1440,height:1000},acceptDownloads:true}),errors=[];p.on('pageerror',e=>errors.push(e.message));
+ await p.goto(`http://127.0.0.1:${port}`);await p.waitForFunction(()=>!document.querySelector('#result').hidden&&!document.querySelector('#run').disabled);
+ const metric=async row=>(await p.locator('#metrics tr').nth(row).locator('td').last().innerText());assert.equal(await metric(3),'6');
+ for(const [scenario,late] of [['outage','6'],['urgent','7'],['capacity','0']]){await p.locator('#scenario').selectOption(scenario);await p.waitForFunction(()=>!document.querySelector('#run').disabled&&!document.querySelector('#result').hidden);assert.equal(await metric(3),late)}
+ await p.locator('.operation').first().click();assert.equal(await p.locator('#detail-dialog').isVisible(),true);await p.locator('[data-close="detail-dialog"]').click();
+ await p.locator('#save').click();await p.waitForFunction(()=>document.querySelector('#message').textContent.includes('uložen'));await Promise.all([p.waitForResponse(r=>r.url().endsWith('/api/plan')),p.locator('#reset').click()]);await p.waitForFunction(()=>!document.querySelector('#run').disabled&&!document.querySelector('#result').hidden);
+ await p.locator('#history').click();await p.locator('#history-list').getByRole('button',{name:'Otevřít',exact:true}).click();await p.waitForFunction(()=>document.querySelector('#history-dialog').open===false&&!document.querySelector('#run').disabled);assert.equal(await p.locator('#scenario').inputValue(),'capacity');assert.equal(await metric(3),'0');
+ const downloadPromise=p.waitForEvent('download');await p.locator('#export-json').click();const downloaded=await downloadPromise;const payload=JSON.parse(await readFile(await downloaded.path(),'utf8'));assert.equal(payload.scenario,'capacity');assert.equal(payload.data.jobs.length,10);
+ await p.locator('#resources input').first().fill('30');assert.equal(await p.locator('#result').isVisible(),false);await p.locator('#scenario').selectOption('baseline');await p.waitForFunction(()=>!document.querySelector('#run').disabled&&!document.querySelector('#result').hidden);assert.ok(Number(await metric(2))>0);assert.equal(await p.locator('#unplanned-note').isVisible(),true);
+ await p.locator('#json-file').setInputFiles({name:'scenario.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(payload))});await p.waitForFunction(()=>document.querySelector('#scenario').value==='capacity'&&!document.querySelector('#result').hidden&&!document.querySelector('#run').disabled);assert.equal(await metric(3),'0');
+ const csvDownload=p.waitForEvent('download');await p.locator('#export-csv').click();const csv=await readFile(await (await csvDownload).path());await Promise.all([p.waitForResponse(r=>r.url().endsWith('/api/plan')),p.locator('#csv-file').setInputFiles({name:'jobs.csv',mimeType:'text/csv',buffer:csv})]);await p.waitForFunction(()=>!document.querySelector('#result').hidden&&!document.querySelector('#run').disabled);assert.equal(await p.locator('#jobs tr').count(),10);
+ const resultDownload=p.waitForEvent('download');await p.locator('#export-result-csv').click();const report=await readFile(await (await resultDownload).path(),'utf8');assert.equal(report.trim().split(/\r?\n/).length,11);assert.ok(report.includes('completion_delta_minutes'));assert.ok(report.includes(';onTime;'));
+ // Hold real responses so a later edit must win over an older result/import/reset.
+ for(const [endpoint,trigger] of [
+  ['/api/plan',()=>p.locator('#run').click()],
+  ['/api/restore',()=>p.locator('#json-file').setInputFiles({name:'scenario.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(payload))})],
+  ['/api/sample',()=>p.locator('#reset').click()]
+ ]){
+  let release,arrived;const gate=new Promise(resolve=>release=resolve),ready=new Promise(resolve=>arrived=resolve);
+  const pattern='**'+endpoint;await p.route(pattern,async route=>{const response=await route.fetch();arrived();await gate;await route.fulfill({response})});
+  await trigger();await ready;const customer=p.locator('#jobs input[type="text"]').nth(1);const edited='Novější editace '+endpoint;await customer.fill(edited);
+  const response=p.waitForResponse(r=>r.url().endsWith(endpoint));release();await response;await p.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+  assert.equal(await customer.inputValue(),edited);assert.equal(await p.locator('#result').isVisible(),false);assert.equal(await p.locator('#run').isDisabled(),false);assert.match(await p.locator('#message').innerText(),/Vstupy se změnily/);await p.unroute(pattern);
+ }
+ await p.locator('#json-file').setInputFiles({name:'scenario.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(payload))});await p.waitForFunction(()=>document.querySelector('#scenario').value==='capacity'&&!document.querySelector('#result').hidden&&!document.querySelector('#run').disabled);
+ await mkdir(path.join(root,'docs'),{recursive:true});await p.screenshot({path:path.join(root,'docs','preview.png')});await p.locator('#result').screenshot({path:path.join(root,'docs','timeline.png')});
+ await p.setViewportSize({width:390,height:844});await p.evaluate(()=>window.scrollTo(0,0));assert.equal(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);assert.ok((await p.locator('#jobs tr').first().boundingBox()).height<80,'Mobile editing rows must stay compact');await p.screenshot({path:path.join(root,'docs','mobile.png')});assert.deepEqual(errors,[]);console.log('PASS: four scenarios, details, SQLite history, unplanned warning, JSON/CSV roundtrip, result CSV, delayed plan/restore/reset versus edit, mobile and no JS errors');
+}finally{
+ await browser?.close();if(child.exitCode===null){child.kill();await once(child,'exit')}
+ const resolved=path.resolve(temp);if(!resolved.startsWith(path.resolve(tmpdir())+path.sep))throw Error('Unsafe cleanup path');await rm(resolved,{recursive:true,force:true});
+}
