@@ -23,4 +23,4 @@ Jednorázové místní měření porovnání pro 200 zakázek: 16,02 ms, 185 nez
 
 ## Hranice
 
-Testy neprokazují globální optimálnost ani úplnou bezpečnost. Nezařazení heuristikou neprokazuje neexistenci jiného pořadí. Model nepokrývá materiál, přestavby strojů, svátky, víkendy, práci přes směnu ani skutečné ERP. SQLite a API jsou místní bez firemního přihlášení. Veřejné nasazení ani vzdálené CI této nové aplikace zatím nebyly ověřeny.
+Testy neprokazují globální optimálnost ani úplnou bezpečnost. Nezařazení heuristikou neprokazuje neexistenci jiného pořadí. Model nepokrývá materiál, přestavby strojů, svátky, víkendy, práci přes směnu ani skutečné ERP. SQLite a API jsou místní bez firemního přihlášení. Veřejná běžící služba není nasazená. GitHub Actions ověřily commit bc8541c úspěšně: https://github.com/OmegaCatt/planboard/actions/runs/42683993618.
