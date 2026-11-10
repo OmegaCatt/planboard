@@ -1,3 +1,12 @@
+# Opakované ověření 10. 11. 2026
+
+**16 Python testů prošlo.** Znovu spuštěné prohlížečové QA ověřilo skutečný pracovní postup na dočasných fiktivních podkladech, desktop i mobil a JavaScript chyby. Nová kontrola zopakovala běžné i připravené chybové toky. Původní počet testů zůstává beze změny.
+
+Ověřený předchozí commit bf4e96d: [GitHub Actions](https://github.com/OmegaCatt/planboard/actions/runs/42687367558); dostupnost jeho artefaktů byla ověřena. Aktuální revize dokumentace/oprav je kontrolována novým CI. Jeho přesný commit a výsledek jsou v hlavním Portfolio_PROGRESS.md. Staré věty o čekající publikaci v rozbaleném archivu platily jen pro dobu daného zápisu.
+
+<details>
+<summary>Historické výsledky, původní metriky a omezení</summary>
+
 # Ověření 9. 11. 2026
 
 ## Automatické testy
@@ -24,3 +33,6 @@ Jednorázové místní měření porovnání pro 200 zakázek: 16,02 ms, 185 nez
 ## Hranice
 
 Testy neprokazují globální optimálnost ani úplnou bezpečnost. Nezařazení heuristikou neprokazuje neexistenci jiného pořadí. Model nepokrývá materiál, přestavby strojů, svátky, víkendy, práci přes směnu ani skutečné ERP. SQLite a API jsou místní bez firemního přihlášení. Veřejná běžící služba není nasazená. GitHub Actions ověřily commit bc8541c úspěšně: https://github.com/OmegaCatt/planboard/actions/runs/42683993618.
+
+
+</details>

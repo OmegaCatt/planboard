@@ -1,3 +1,12 @@
+# Aktuální rozsah a kontrola 10. 11. 2026
+
+Aktuální funkce, technologie, API, způsob použití, firemní zavedení a omezení jsou v [README](../README.md). Znovu prošlo 16 Python testů a odpovídající skutečný browser průchod desktop/mobil. Jde o fiktivní portfolio projekt. Výsledky a případné opravy jsou v [QA](QA.md).
+
+Předchozí ověřený kód bf4e96d: [úspěšné GitHub Actions](https://github.com/OmegaCatt/planboard/actions/runs/42687367558). Nový commit této revize má vlastní CI; aktuální stav je v hlavním protokolu portfolia. Níže uvedené historické plány nejsou seznam nehotových funkcí.
+
+<details>
+<summary>Historická projektová rozhodnutí a průběžné etapy</summary>
+
 # PlanBoard – PB-1 až PB-10
 
 Navazuje na schválený plán rozvoje portfolia. Cílem je ukázat rozbor provozního procesu, práci s omezeními a ověřování výsledku pro role IT konzultanta, plánování a technické analýzy.
@@ -9,3 +18,6 @@ Rozhodnutí: pracovní čas používá pět 480minutových dnů, operace se neve
 Ověření a naměřené výsledky jsou v QA.md. Další možné rozšíření podle skutečné zpětné vazby: různé směny podle dne, přestavby, více operací a zdrojová integrace. Nepřidávat je předem jako hotové schopnosti. Veřejná služba by vyžadovala samostatnou identitu, provozní limity a další kontrolu.
 
 PB-10: samostatný CSV přehled výsledků se znovu počítá z validovaných vstupů, zachovává nezařazené zakázky a důvody. Generační kontrola chrání nejen výpočet, ale i pomalé obnovení JSON/SQLite, import CSV a reset ukázky. Browser regrese zadržuje skutečné odpovědi výpočtu/obnovení/resetu a ověřuje zachování novější editace.
+
+
+</details>
