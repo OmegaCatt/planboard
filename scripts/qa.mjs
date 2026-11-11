@@ -1,3 +1,4 @@
+import {verifyGuide,verifyGuideLinks,dismissGuide} from './guide-qa.mjs';
 import {spawn} from 'node:child_process';import {once} from 'node:events';import {mkdtemp,rm,readFile,mkdir} from 'node:fs/promises';import {tmpdir} from 'node:os';import path from 'node:path';import {fileURLToPath} from 'node:url';import assert from 'node:assert/strict';import {chromium} from 'playwright';
 const root=fileURLToPath(new URL('../',import.meta.url)),temp=await mkdtemp(path.join(tmpdir(),'planboard-qa-'));
 const python=process.env.PLANBOARD_PYTHON||'python';
@@ -5,7 +6,8 @@ const child=spawn(python,['-u','-c',"import sys;from server import create_server
 try{
  const port=await new Promise((resolve,reject)=>{const timeout=setTimeout(()=>reject(Error('QA server did not start')),20000);child.once('error',e=>{clearTimeout(timeout);reject(e)});child.once('exit',code=>{clearTimeout(timeout);reject(Error('QA server exited '+code))});child.stdout.once('data',d=>{clearTimeout(timeout);resolve(String(d).trim())})});assert.match(port,/^\d+$/);
  browser=await chromium.launch({headless:true,...(process.env.PLAYWRIGHT_EXECUTABLE_PATH?{executablePath:process.env.PLAYWRIGHT_EXECUTABLE_PATH}:{})});const p=await browser.newPage({viewport:{width:1440,height:1000},acceptDownloads:true}),errors=[];p.on('pageerror',e=>errors.push(e.message));
- await p.goto(`http://127.0.0.1:${port}`);await p.waitForFunction(()=>!document.querySelector('#result').hidden&&!document.querySelector('#run').disabled);
+ await p.goto(`http://127.0.0.1:${port}`);await verifyGuide(p,{});await p.waitForFunction(()=>!document.querySelector('#result').hidden&&!document.querySelector('#run').disabled);
+ const operation=p.getByLabel('První operace Z-001',{exact:true});assert.equal(await operation.locator('option[value=assembly]').innerText(),'Montáž');assert.equal(await operation.locator('option[value=cut]').innerText(),'Řezání');assert.equal(await operation.locator('option[value=pack]').innerText(),'Balení');const originalOperation=await operation.inputValue();await operation.selectOption('cut');assert.equal(await operation.inputValue(),'cut');await operation.selectOption(originalOperation);await p.locator('#run').click();await p.waitForFunction(()=>!document.querySelector('#run').disabled&&!document.querySelector('#result').hidden);
  const metric=async row=>(await p.locator('#metrics tr').nth(row).locator('td').last().innerText());assert.equal(await metric(3),'6');
  for(const [scenario,late] of [['outage','6'],['urgent','7'],['capacity','0']]){await p.locator('#scenario').selectOption(scenario);await p.waitForFunction(()=>!document.querySelector('#run').disabled&&!document.querySelector('#result').hidden);assert.equal(await metric(3),late)}
  await p.locator('.operation').first().click();assert.equal(await p.locator('#detail-dialog').isVisible(),true);await p.locator('[data-close="detail-dialog"]').click();

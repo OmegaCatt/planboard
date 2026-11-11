@@ -2,6 +2,8 @@
 from __future__ import annotations
 from copy import deepcopy
 
+OPERATION_NAMES = {'cut': 'Řezání', 'assembly': 'Montáž', 'pack': 'Balení'}
+
 VERSION = 1
 DAY = 480
 HORIZON = 5 * DAY
@@ -104,7 +106,7 @@ def schedule(data):
                 if start is not None:
                     candidates.append((start, resource['id']))
             if not candidates:
-                failure = f"Pro zvolené pořadí se operace {index + 1} ({op['machine']}, {op['minutes']} min) po dokončení předchůdce nevejde do dostupných směn pětidenního horizontu. Jiné pořadí může dát jiný výsledek."
+                failure = f"Pro zvolené pořadí se operace {index + 1} ({OPERATION_NAMES.get(op['machine'], op['machine'])}, {op['minutes']} min) po dokončení předchůdce nevejde do dostupných směn pětidenního horizontu. Jiné pořadí může dát jiný výsledek."
                 break
             start, resource_id = min(candidates)
             calendar_start=find_slot(windows[resource_id],[],release,op['minutes'])

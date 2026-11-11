@@ -1,5 +1,12 @@
 # PlanBoard
 
+## Orientace v aplikaci (11. 11. 2026)
+
+Při první návštěvě se otevře stručný návod. Po zavření si aplikace v tomto prohlížeči zapamatuje potvrzení; změna nemá vliv na obchodní data. V hlavičce lze kdykoli otevřít **Jak aplikaci používat** a **Technické informace**. Oba obsahy odkazují na úplný README zde na GitHubu. Pokud úložiště prohlížeče není dostupné, návod lze zavřít a aplikace dál funguje.
+
+Operace se v rozhraní zobrazují česky: Řezání, Montáž a Balení. Strojové klíče cut/assembly/pack v JSON/CSV zůstávají stabilní kvůli kompatibilitě. Vlastní neznámé názvy se zobrazí tak, jak byly zadané.
+
+
 **Plánování fiktivních zakázek, omezené kapacity a dopadu provozních změn.** Python plánovač sestaví časový plán, samostatně ověří jeho proveditelnost a porovná původní stav s výpadkem, urgentní zakázkou nebo paralelní kapacitou.
 
 ![Porovnání kapacity](docs/timeline.png)
@@ -70,6 +77,9 @@ Pokud příkaz `python` není na PATH, lze nastavit `PLANBOARD_PYTHON`. Pro mís
 Firemní pilot by začal odsouhlasením časových jednotek, směn, návazností, kapacit a vyhodnocovaných termínů. Potom by se známé zakázky ručně přepočítaly a srovnaly s nástrojem v odděleném prostředí. Skutečné zavedení vyžaduje přihlášení, oprávnění, správu kalendářů a zdrojových integrací, monitoring a provozní odpovědnost. Místní demo používá jen fiktivní data a nenahrazuje výrobní systém.
 
 ## English
+
+First-time visitors see a keyboard-accessible guide; persistent header buttons reopen usage and technical information with a link to this README. Acknowledgement is browser-local and does not store business records. Operation labels are localized as Řezání (cut), Montáž (assembly), Balení (pack), while JSON/CSV machine keys remain stable. Custom names retain their supplied text.
+
 
 PlanBoard is a local portfolio application for finite-capacity job planning. A deterministic Python heuristic schedules one or two nonpreemptive operations per job across compatible resources over five 480-minute workdays. It compares a shared baseline with a two-hour outage, an urgent job or parallel capacity, keeping unscheduled jobs visible. A separate checker verifies constraints, waiting explanations and metrics. It does not claim global optimality or use AI/API keys.
 

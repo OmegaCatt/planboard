@@ -10,7 +10,7 @@ from imports import import_csv,export_csv,export_result_csv
 from planner import compare,validate,VERSION
 
 ROOT=Path(__file__).resolve().parent
-FILES={'/':('index.html','text/html'),'/app.js':('app.js','text/javascript'),'/style.css':('style.css','text/css')}
+FILES={'/guide.js':('guide.js','text/javascript'),'/guide.css':('guide.css','text/css'),'/':('index.html','text/html'),'/app.js':('app.js','text/javascript'),'/style.css':('style.css','text/css')}
 
 
 class Handler(BaseHTTPRequestHandler):

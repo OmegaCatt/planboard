@@ -1,12 +1,14 @@
 'use strict';
 const $=id=>document.getElementById(id),state={data:null,result:null,generation:0,busy:false};
+const operationNames={cut:'Řezání',assembly:'Montáž',pack:'Balení'};
+const operationName=key=>operationNames[key]||key;
 const labels={onTime:'V termínu',late:'Zpoždění',unplanned:'Nezařazeno'};
 function el(tag,text='',className=''){const n=document.createElement(tag);n.textContent=text;if(className)n.className=className;return n}
 function message(text,error=false){$('message').textContent=text;$('message').classList.toggle('error',error)}
 async function api(path,body,method){const r=await fetch(path,{method:method||(body?'POST':'GET'),headers:body?{'Content-Type':'application/json'}:{},body:body?JSON.stringify(body):undefined});const data=await r.json();if(!r.ok)throw Error(data.error||'Požadavek selhal.');return data}
 function dirty(){state.generation++;state.busy=false;$('run').disabled=false;state.result=null;$('result').hidden=true;$('freshness').textContent='Změněno – přepočítejte plán.';message('Vstupy se změnily. Přepočítejte plán pro aktuální výsledek.')}
 function input(value,type,label,change){const n=document.createElement('input');n.type=type;n.value=value;n.setAttribute('aria-label',label);if(type==='number'){n.min='1';n.max='480';n.step='1'}n.addEventListener('input',()=>{change(type==='number'?Number(n.value):n.value);dirty()});return n}
-function machine(value,label,change,optional=false){const n=document.createElement('select');n.setAttribute('aria-label',label);if(optional){const o=el('option','Bez druhé operace');o.value='';n.append(o)}for(const key of new Set(state.data.resources.map(r=>r.capability))){const o=el('option',key);o.value=key;n.append(o)}n.value=value;n.addEventListener('change',()=>{change(n.value);dirty()});return n}
+function machine(value,label,change,optional=false){const n=document.createElement('select');n.setAttribute('aria-label',label);if(optional){const o=el('option','Bez druhé operace');o.value='';n.append(o)}for(const key of new Set(state.data.resources.map(r=>r.capability))){const o=el('option',operationName(key));o.value=key;n.append(o)}n.value=value;n.addEventListener('change',()=>{change(n.value);dirty()});return n}
 function renderInputs(){
  const rows=$('jobs');rows.replaceChildren();
  for(const [i,job] of state.data.jobs.entries()){
@@ -20,7 +22,7 @@ function renderInputs(){
   const remove=el('button','Odebrat');remove.setAttribute('aria-label',`Odebrat ${job.id}`);remove.onclick=()=>{if(state.data.jobs.length===1){message('Ponechte alespoň jednu zakázku.',true);return}state.data.jobs.splice(i,1);dirty();renderInputs()};add(remove);rows.append(tr);
  }
  const resources=$('resources');resources.replaceChildren();
- for(const resource of state.data.resources){const row=el('div','','resource');row.append(el('strong',resource.name),el('small','Typ operace: '+resource.capability));const label=el('label','Minut denně ');label.append(input(resource.dailyMinutes,'number',`Kapacita ${resource.name}`,v=>resource.dailyMinutes=v));row.append(label);if(resource.blackouts?.length)row.append(el('small',`${resource.blackouts.length} uložených intervalů výpadku`));resources.append(row)}
+ for(const resource of state.data.resources){const row=el('div','','resource');row.append(el('strong',resource.name),el('small','Typ operace: '+operationName(resource.capability)));const label=el('label','Minut denně ');label.append(input(resource.dailyMinutes,'number',`Kapacita ${resource.name}`,v=>resource.dailyMinutes=v));row.append(label);if(resource.blackouts?.length)row.append(el('small',`${resource.blackouts.length} uložených intervalů výpadku`));resources.append(row)}
 }
 function time(value,end=false){if(value===null||value===undefined)return '—';let day=Math.floor(value/480),minute=value%480;if(end&&value>0&&minute===0){day--;minute=480}return `D${day+1} ${String(8+Math.floor(minute/60)).padStart(2,'0')}:${String(minute%60).padStart(2,'0')}`}
 function detail(id){const result=state.result?.changed;if(!result)return;const job=result.jobs.find(j=>j.id===id);$('detail-title').textContent=job.id+' – '+labels[job.status];const root=$('detail');root.replaceChildren(el('p',job.customer),el('p',`Termín: ${time(job.due,true)}. Dokončení: ${time(job.completion,true)}.`),el('p',job.reason));for(const op of result.operations.filter(o=>o.jobId===id)){root.append(el('p',`Operace ${op.operation} · ${op.resource} · ${time(op.start)} až ${time(op.end,true)} · ${op.end-op.start} min`),el('p',`Nejdříve podle návaznosti: ${time(op.release)}. První vhodný interval kalendáře bez ostatních zakázek: ${time(op.calendarStart)}. Čekání podle kalendáře: ${op.calendarWait} min. Další čekání po započtení obsazenosti a následných směn: ${op.occupancyWait} min.`));}$('detail-dialog').showModal()}
