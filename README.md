@@ -6,11 +6,11 @@ Porovná plán zakázek při výpadku pracoviště nebo při přidání kapacity
 
 ### Video ukázka
 
-**[Přehrát video — 0:39, bez zvuku](https://raw.githubusercontent.com/OmegaCatt/planboard/main/docs/videos/planboard.mp4)** · [Co ukázka předvádí](docs/VIDEO.md)
+**[Stáhnout video MP4 — 0:39, bez zvuku](https://raw.githubusercontent.com/OmegaCatt/planboard/main/docs/videos/planboard.mp4)** · [Co ukázka předvádí](docs/VIDEO.md)
 
-<a href="https://raw.githubusercontent.com/OmegaCatt/planboard/main/docs/videos/planboard.mp4"><img src="docs/videos/planboard-poster.png" alt="Přehrát video aplikace PlanBoard" width="720"></a>
+<a href="https://raw.githubusercontent.com/OmegaCatt/planboard/main/docs/videos/planboard.mp4"><img src="docs/videos/planboard-poster.png" alt="Stáhnout video aplikace PlanBoard" width="720"></a>
 
-Skutečný průchod aplikací s českými titulky a viditelnou myší. Klikněte na náhled nebo odkaz nad ním; není potřeba nic instalovat. [Soubor MP4 na GitHubu](https://github.com/OmegaCatt/planboard/blob/main/docs/videos/planboard.mp4).
+Skutečný průchod aplikací s českými titulky a viditelnou myší. Kliknutím na náhled stáhnete video MP4; po stažení jej otevřete v běžném přehrávači videa. Samotnou aplikaci není potřeba instalovat. [Soubor MP4 na GitHubu](https://github.com/OmegaCatt/planboard/blob/main/docs/videos/planboard.mp4).
 
 **[Prohlédnout veřejnou ukázku](https://omegacatt.github.io/datadesk/portfolio/#planboard)** - bez instalace a přihlášení.
 
