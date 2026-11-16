@@ -1,0 +1,136 @@
+{
+  "recordedAt": "2026-11-16T15:06:37.464Z",
+  "sourceCommit": "cd40d6a1737a9084ec2c0b6c1e34c9eff41234e5",
+  "scriptSha256": "a53e5e4a8239e47c9ed4d9a4ca68a70fe97a9dbdbc558eba67a841a991d116a8",
+  "helperSha256": "965b860d9ec7fb3d2a26c516544bc6e5d8cc331be3bd5de702eaed7b93dc1396",
+  "videoSha256": "95b7a70d81aa429371b353c1597060fcd564ad9154b7c12ee527aeee84d33714",
+  "mode": "actual isolated local HTTP/browser; fictional data; AI disabled; silent Full HD app-only recording",
+  "presentation": {
+    "width": 1920,
+    "height": 1080,
+    "captionFontPixels": 42,
+    "burnedInCaptions": true,
+    "visiblePointer": true,
+    "actualClickMarkers": true,
+    "audio": false,
+    "trimStartSeconds": 0.6,
+    "renderedOverlay": {
+      "topLayer": true,
+      "pointer": true,
+      "fontSize": "42px",
+      "pointerSvg": {
+        "width": 36,
+        "height": 42,
+        "fill": "rgb(255, 255, 255)",
+        "stroke": "rgb(17, 24, 32)"
+      },
+      "clickMarker": {
+        "width": 68,
+        "height": 68,
+        "border": 4,
+        "color": "rgb(216, 136, 24)"
+      }
+    }
+  },
+  "verified": {
+    "jobs": 10,
+    "baselineLate": 6,
+    "parallelCapacityLate": 0,
+    "unscheduledWarningVisible": true,
+    "jsErrors": []
+  },
+  "captions": [
+    {
+      "start": 1.721,
+      "text": "PlanBoard: zakázky, kapacity a provozní změny.",
+      "end": 5.293
+    },
+    {
+      "start": 5.293,
+      "text": "Deset připravených zakázek a omezená pracoviště. Základní plán má šest pozdních zakázek.",
+      "end": 9.345
+    },
+    {
+      "start": 9.345,
+      "text": "Přidáme paralelní kapacitu pracoviště.",
+      "end": 12.548
+    },
+    {
+      "start": 12.548,
+      "text": "Přidání paralelní kapacity v tomto příkladu odstraní zpoždění. Výsledek se právě vypočítal.",
+      "end": 16.584
+    },
+    {
+      "start": 16.584,
+      "text": "Klikneme na operaci v časovém plánu.",
+      "end": 19.873
+    },
+    {
+      "start": 19.873,
+      "text": "Detail operace vysvětluje návaznosti a čekání. Plán ověřuje samostatný kontrolor.",
+      "end": 25.905
+    },
+    {
+      "start": 25.905,
+      "text": "Snížíme denní kapacitu na 30 minut a přepočítáme základní scénář.",
+      "end": 30.065
+    },
+    {
+      "start": 30.065,
+      "text": "Při příliš malé kapacitě zůstávají nezařazené zakázky viditelné. Jejich vynechání není úspěšnější plán.",
+      "end": 35.243
+    },
+    {
+      "start": 35.243,
+      "text": "Podrobný návod ke spuštění najdete v README projektu.",
+      "end": 39.246
+    }
+  ],
+  "actions": [
+    {
+      "kind": "select",
+      "target": "scenario",
+      "x": 399,
+      "y": 540.46875,
+      "captionPosition": "bottom",
+      "captionOverlapsTarget": false,
+      "at": 11.826
+    },
+    {
+      "kind": "click",
+      "target": "Z-002, operace 1, D1 08:00 až D1 11:00",
+      "x": 446.3203125,
+      "y": 540.34375,
+      "captionPosition": "bottom",
+      "captionOverlapsTarget": false,
+      "at": 19.066
+    },
+    {
+      "kind": "click",
+      "target": "Zavřít",
+      "x": 1266.5859375,
+      "y": 383.234375,
+      "captionPosition": "bottom",
+      "captionOverlapsTarget": false,
+      "at": 25.097
+    },
+    {
+      "kind": "fill",
+      "target": "Kapacita Montáž",
+      "x": 1626,
+      "y": 539.84375,
+      "captionPosition": "bottom",
+      "captionOverlapsTarget": false,
+      "at": 27.168
+    },
+    {
+      "kind": "select",
+      "target": "scenario",
+      "x": 399,
+      "y": 926.46875,
+      "captionPosition": "bottom",
+      "captionOverlapsTarget": false,
+      "at": 29.336
+    }
+  ]
+}
