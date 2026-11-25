@@ -12,9 +12,7 @@ Porovná plán zakázek při výpadku pracoviště nebo při přidání kapacity
 
 Skutečný průchod aplikací s českými titulky a viditelnou myší. Kliknutím na náhled stáhnete video MP4; po stažení jej otevřete v běžném přehrávači videa. Samotnou aplikaci není potřeba instalovat. [Soubor MP4 na GitHubu](https://github.com/OmegaCatt/planboard/blob/main/docs/videos/planboard.mp4).
 
-**[Prohlédnout veřejnou ukázku](https://omegacatt.github.io/datadesk/portfolio/#planboard)** - bez instalace a přihlášení.
-
-Veřejný odkaz ukazuje uložený snímek výsledků. Plnou aplikaci si spustíte na počítači podle návodu níže.
+Plnou aplikaci si můžete vyzkoušet po místním spuštění podle návodu níže; online živá verze není dostupná.
 
 ## Spuštění krok za krokem (Windows)
 
